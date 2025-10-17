@@ -5,8 +5,9 @@ import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:myapp/history_screen.dart';
 import 'package:myapp/activity_log_screen.dart';
-import 'package:myapp/workout_screen.dart';
+import 'package:myapp/start_workout_screen.dart';
 import 'package:myapp/nutrition_screen.dart';
+import 'package:myapp/activity_status.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 void main() {
@@ -43,10 +44,9 @@ class FitnessTracker extends StatefulWidget {
 
 class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStateMixin {
   late Stream<StepCount> _stepCountStream;
-  late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?', _steps = '0';
+  String _steps = '0';
   int _dailyGoal = 10000;
-  int _streak = 5; // Example streak
+  final int _streak = 5; // Example streak
   final TextEditingController _goalController = TextEditingController();
   Map<String, int> _stepHistory = {};
   List<Map<String, dynamic>> _activityLog = [];
@@ -113,18 +113,6 @@ class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStat
     });
   }
 
-  void onPedestrianStatusChanged(PedestrianStatus event) {
-    setState(() {
-      _status = event.status;
-    });
-  }
-
-  void onPedestrianStatusError(error) {
-    setState(() {
-      _status = 'Pedestrian Status not available';
-    });
-  }
-
   void onStepCountError(error) {
     setState(() {
       _steps = 'Step Count not available';
@@ -133,11 +121,6 @@ class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStat
 
   Future<void> initPlatformState() async {
     if (await Permission.activityRecognition.request().isGranted) {
-      _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-      _pedestrianStatusStream
-          .listen(onPedestrianStatusChanged)
-          .onError(onPedestrianStatusError);
-
       _stepCountStream = Pedometer.stepCountStream;
       _stepCountStream.listen(onStepCount).onError(onStepCountError);
     }
@@ -198,10 +181,10 @@ class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStat
     );
   }
 
-  void _navigateToWorkoutScreen() {
+  void _navigateToStartWorkoutScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const WorkoutScreen()),
+      MaterialPageRoute(builder: (context) => const StartWorkoutScreen()),
     );
   }
 
@@ -227,7 +210,7 @@ class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStat
           ),
           IconButton(
             icon: const Icon(Icons.directions_run),
-            onPressed: _navigateToWorkoutScreen,
+            onPressed: _navigateToStartWorkoutScreen,
             tooltip: 'Start Workout',
           ),
           IconButton(
@@ -254,7 +237,7 @@ class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStat
           const SizedBox(height: 20),
           _buildStreakCounter(),
           const SizedBox(height: 20),
-          _buildActivityStatus(),
+          const ActivityStatus(),
           const SizedBox(height: 20),
           _buildWorkoutCard(),
           const SizedBox(height: 20),
@@ -339,42 +322,13 @@ class _FitnessTrackerState extends State<FitnessTracker> with TickerProviderStat
     );
   }
 
-  Widget _buildActivityStatus() {
-    return Card(
-      color: const Color(0xFF1F1F1F),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            const Text('Activity Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white70)),
-            const SizedBox(height: 10),
-            Icon(
-              _status == 'walking' ? Icons.directions_walk : _status == 'stopped' ? Icons.accessibility_new : Icons.device_unknown,
-              size: 80,
-              color: const Color(0xFFBB86FC),
-            ),
-            const SizedBox(height: 10),
-            Text(_status.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: _status == 'walking' ? Colors.green : _status == 'stopped' ? Colors.orange : Colors.red,
-                )),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildWorkoutCard() {
     return Card(
       color: const Color(0xFF1F1F1F),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
-        onTap: _navigateToWorkoutScreen,
+        onTap: _navigateToStartWorkoutScreen,
         child: const Padding(
           padding: EdgeInsets.all(20.0),
           child: Column(

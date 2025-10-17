@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class WorkoutScreen extends StatefulWidget {
-  const WorkoutScreen({super.key});
+  final String workoutType;
+
+  const WorkoutScreen({super.key, required this.workoutType});
 
   @override
   _WorkoutScreenState createState() => _WorkoutScreenState();
@@ -12,7 +14,7 @@ class WorkoutScreen extends StatefulWidget {
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
   final Stopwatch _stopwatch = Stopwatch();
-  late Timer _timer;
+  Timer? _timer;
   bool _isRunning = false;
   String _elapsedTime = '00:00:00';
 
@@ -40,7 +42,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     if (_isRunning) {
       WakelockPlus.disable();
       _stopwatch.stop();
-      _timer.cancel();
+      _timer?.cancel();
       setState(() {
         _isRunning = false;
       });
@@ -55,6 +57,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     });
   }
 
+  void _saveWorkout() {
+    // In a real app, this would save the workout to a log.
+    final duration = _stopwatch.elapsed;
+    final workoutType = widget.workoutType;
+    
+    print('Saving workout: $workoutType, Duration: ${_formatElapsedTime(duration)}');
+
+    _resetStopwatch();
+    
+    // Pop twice to get back to the main dashboard
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
   String _formatElapsedTime(Duration duration) {
     final hours = duration.inHours.toString().padLeft(2, '0');
     final minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
@@ -64,7 +80,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -73,7 +89,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Session'),
+        title: Text(widget.workoutType),
         backgroundColor: const Color(0xFF2C2C2C),
       ),
       body: Center(
@@ -97,8 +113,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       backgroundColor: Colors.green,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     ),
-                  ),
-                if (_isRunning)
+                  )
+                else
                   ElevatedButton.icon(
                     onPressed: _pauseStopwatch,
                     icon: const Icon(Icons.pause),
@@ -112,7 +128,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 ElevatedButton.icon(
                   onPressed: _resetStopwatch,
                   icon: const Icon(Icons.stop),
-                  label: const Text('Stop'),
+                  label: const Text('Stop & Discard'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
@@ -120,6 +136,21 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            if (!_isRunning && _stopwatch.elapsedMilliseconds > 0)
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: ElevatedButton.icon(
+                  onPressed: _saveWorkout,
+                  icon: const Icon(Icons.save),
+                  label: const Text('Save Workout'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFBB86FC),
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                    textStyle: const TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
