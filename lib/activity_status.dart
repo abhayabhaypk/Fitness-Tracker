@@ -1,76 +1,72 @@
 
 import 'package:flutter/material.dart';
-import 'package:pedometer/pedometer.dart';
-import 'dart:async';
 
-class ActivityStatus extends StatefulWidget {
-  const ActivityStatus({super.key});
+class ActivityStatus extends StatelessWidget {
+  final int steps;
+  final int goal;
 
-  @override
-  _ActivityStatusState createState() => _ActivityStatusState();
-}
-
-class _ActivityStatusState extends State<ActivityStatus> {
-  late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?';
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  void onPedestrianStatusChanged(PedestrianStatus event) {
-    setState(() {
-      _status = event.status;
-    });
-  }
-
-  void onPedestrianStatusError(error) {
-    setState(() {
-      _status = 'Pedestrian Status not available';
-    });
-  }
-
-  Future<void> initPlatformState() async {
-    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream
-        .listen(onPedestrianStatusChanged)
-        .onError(onPedestrianStatusError);
-  }
+  const ActivityStatus({
+    super.key,
+    this.steps = 0,
+    this.goal = 10000,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFF1F1F1F),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
+    double progress = goal > 0 ? steps / goal : 0.0;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF1F1F1F), // Dark theme background
+      body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Activity Status', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white70)),
-            const SizedBox(height: 10),
-            Icon(
-              _status == 'walking'
-                  ? Icons.directions_walk
-                  : _status == 'stopped'
-                      ? Icons.accessibility_new
-                      : Icons.device_unknown,
-              size: 80,
-              color: const Color(0xFFBB86FC),
-            ),
-            const SizedBox(height: 10),
             Text(
-              _status.toUpperCase(),
-              style: TextStyle(
+              'Daily Goal: $goal steps',
+              style: const TextStyle(
+                color: Colors.white70,
                 fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: _status == 'walking'
-                    ? Colors.green
-                    : _status == 'stopped'
-                        ? Colors.orange
-                        : Colors.red,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: 250,
+              height: 250,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CircularProgressIndicator(
+                    value: progress,
+                    strokeWidth: 20,
+                    backgroundColor: Colors.grey[850],
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white38),
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Steps',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '$steps',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
