@@ -1,5 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:myapp/activity_history_screen.dart';
+import 'package:myapp/personal_goals_screen.dart';
+import 'package:myapp/settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -26,9 +28,24 @@ class ProfileScreen extends StatelessWidget {
           children: [
             _buildProfileHeader(),
             const SizedBox(height: 30),
-            _buildProfileOption(context, 'Activity History', Icons.history),
-            _buildProfileOption(context, 'Personal Goals', Icons.flag),
-            _buildProfileOption(context, 'Settings', Icons.settings),
+            _buildProfileOption(context, 'Activity History', Icons.history, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ActivityHistoryScreen()),
+              );
+            }),
+            _buildProfileOption(context, 'Personal Goals', Icons.flag, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PersonalGoalsScreen()),
+              );
+            }),
+            _buildProfileOption(context, 'Settings', Icons.settings, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            }),
             const SizedBox(height: 20),
             _buildLogoutButton(context),
           ],
@@ -46,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         SizedBox(height: 16),
         Text(
-          'John Doe',
+          'james',
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -55,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Text(
-          'john.doe@example.com',
+          'james@gmail.com',
           style: TextStyle(
             fontSize: 18,
             color: Colors.white70,
@@ -65,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileOption(BuildContext context, String title, IconData icon) {
+  Widget _buildProfileOption(BuildContext context, String title, IconData icon, VoidCallback onTap) {
     return Card(
       color: const Color(0xFF2C2C2C),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -74,9 +91,7 @@ class ProfileScreen extends StatelessWidget {
         leading: Icon(icon, color: const Color(0xFFBB86FC)),
         title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 18)),
         trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white70),
-        onTap: () {
-          // Placeholder for navigating to the respective screen
-        },
+        onTap: onTap,
       ),
     );
   }

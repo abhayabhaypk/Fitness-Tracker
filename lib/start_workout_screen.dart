@@ -14,7 +14,7 @@ class StartWorkoutScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF1F1F1F),
         actions: [
           IconButton(
-            icon: const Icon(Icons.history, size: 28),
+            icon: const Icon(Icons.saved_search, size: 28),
             onPressed: () {
               Navigator.push(
                 context,
@@ -54,18 +54,6 @@ class StartWorkoutScreen extends StatelessWidget {
         color: const Color(0xFF2C2C2C),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFF03DAC6)),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.info_outline, color: Color(0xFF03DAC6), size: 30),
-          SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              'Select a workout type or create your own to begin tracking.',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ),
-        ],
       ),
     );
   }

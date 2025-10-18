@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:myapp/activity_status.dart';
 import 'package:myapp/start_workout_screen.dart';
 import 'package:myapp/nutrition_screen.dart';
 import 'package:myapp/profile_screen.dart';
+import 'package:myapp/login_screen.dart';
+import 'package:myapp/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,13 +18,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fitness App',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF1F1F1F),
+        scaffoldBackgroundColor: const Color(0xFF121212),
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFBB86FC),
           secondary: Color(0xFF03DAC6),
         ),
       ),
-      home: const MainScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginScreen(),
+        '/home': (context) => const MainScreen(),
+        '/signup': (context) => const SignupScreen(),
+      },
     );
   }
 }
