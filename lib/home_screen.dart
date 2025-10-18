@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              _buildHeader(context),
               const SizedBox(height: 24),
               _buildActivitySummary(),
               const SizedBox(height: 24),
@@ -27,25 +28,46 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Good Morning, User!',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        const Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Good Morning, User!',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 8),
+              Text(
+                '"The only bad workout is the one that didn\'t happen."',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white70,
+                ),
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 8),
-        Text(
-          '"The only bad workout is the one that didn\'t happen."',
-          style: TextStyle(
-            fontSize: 16,
-            fontStyle: FontStyle.italic,
-            color: Colors.white70,
+        const SizedBox(width: 16),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          },
+          child: const CircleAvatar(
+            radius: 24,
+            backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=a042581f4e29026704d'),
           ),
         ),
       ],
@@ -89,17 +111,17 @@ class HomeScreen extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             children: const [
               _WorkoutCard(
-                image: 'assets/images/workout1.jpg',
+                image: 'https://images.unsplash.com/photo-1581009137042-c552e485697a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 title: 'Full Body Strength',
                 duration: '45 min',
               ),
               _WorkoutCard(
-                image: 'assets/images/workout2.jpg',
+                image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2120&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 title: 'Cardio Blast',
                 duration: '30 min',
               ),
               _WorkoutCard(
-                image: 'assets/images/workout3.jpg',
+                image: 'https://images.unsplash.com/photo-1591291621364-11893b3a10a7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 title: 'Yoga & Flexibility',
                 duration: '60 min',
               ),
@@ -175,7 +197,7 @@ class _WorkoutCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
+            child: Image.network(
               image,
               height: 120,
               width: 160,
