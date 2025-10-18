@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/activity_status.dart';
+import 'package:myapp/home_screen.dart';
 import 'package:myapp/start_workout_screen.dart';
 import 'package:myapp/nutrition_screen.dart';
 import 'package:myapp/profile_screen.dart';
@@ -45,7 +45,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const ActivityStatus(),
+    const HomeScreen(),
     const StartWorkoutScreen(),
     const NutritionScreen(),
     const ProfileScreen(),
