@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/home_screen.dart';
 import 'package:myapp/start_workout_screen.dart';
 import 'package:myapp/nutrition_screen.dart';
-import 'package:myapp/profile_screen.dart';
 import 'package:myapp/login_screen.dart';
 import 'package:myapp/signup_screen.dart';
 
@@ -48,7 +47,6 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const StartWorkoutScreen(),
     const NutritionScreen(),
-    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -80,10 +78,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.fastfood),
             label: 'Nutrition',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
           ),
         ],
       ),

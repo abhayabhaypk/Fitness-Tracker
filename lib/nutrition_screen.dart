@@ -21,29 +21,46 @@ class _NutritionScreenState extends State<NutritionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Nutrition Tracker'),
-        backgroundColor: const Color(0xFF1F1F1F),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            _buildMacroChartCard(),
-            const SizedBox(height: 20),
-            _buildCalorieSummaryCard(),
-            const SizedBox(height: 20),
-            _buildMealLoggingSection(),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage('https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Container(
+            color: Colors.black.withOpacity(0.7),
+          ),
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                _buildMacroChartCard(),
+                const SizedBox(height: 20),
+                _buildCalorieSummaryCard(),
+                const SizedBox(height: 20),
+                _buildMealLoggingSection(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildMacroChartCard() {
     return Card(
-      color: const Color(0xFF1F1F1F),
+      color: Colors.black.withOpacity(0.5),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -124,7 +141,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
 
   Widget _buildCalorieSummaryCard() {
     return Card(
-      color: const Color(0xFF1F1F1F),
+      color: Colors.black.withOpacity(0.5),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -155,25 +172,33 @@ class _NutritionScreenState extends State<NutritionScreen> {
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 10),
-        _buildMealCard('Breakfast', Icons.free_breakfast, '450 kcal'),
-        _buildMealCard('Lunch', Icons.lunch_dining, '750 kcal'),
-        _buildMealCard('Dinner', Icons.dinner_dining, '800 kcal'),
+        _buildMealCard('Breakfast', 'https://images.unsplash.com/photo-1484723051597-62b8a788a660?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', '450 kcal'),
+        _buildMealCard('Lunch', 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', '750 kcal'),
+        _buildMealCard('Dinner', 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', '800 kcal'),
       ],
     );
   }
 
-  Widget _buildMealCard(String meal, IconData icon, String calories) {
+  Widget _buildMealCard(String meal, String imageUrl, String calories) {
     return Card(
-      color: const Color(0xFF2C2C2C),
+      color: Colors.black.withOpacity(0.4),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFFBB86FC), size: 40),
-        title: Text(meal, style: const TextStyle(fontSize: 20, color: Colors.white)),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: Image.network(
+            imageUrl,
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+          ),
+        ),
+        title: Text(meal, style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold)),
         subtitle: Text(calories, style: const TextStyle(fontSize: 16, color: Colors.white70)),
         trailing: IconButton(
-          icon: const Icon(Icons.add_circle_outline, color: Colors.white70),
+          icon: const Icon(Icons.add_circle_outline, color: Colors.white70, size: 30),
           onPressed: () {
             // Placeholder for adding food items
             ScaffoldMessenger.of(context).showSnackBar(
