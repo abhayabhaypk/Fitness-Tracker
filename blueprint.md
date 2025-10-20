@@ -13,6 +13,7 @@ This document outlines the plan for building a cross-platform fitness tracker ap
 - **Goal Setting:** Allow users to set daily fitness goals and track their performance.
 - **History:** Store and display the user's activity history to help them track their progress over time.
 - **Cross-Platform:** The app will be available on both Android and iOS devices.
+- **User Profile:** A dedicated screen for users to view and edit their profile information, including their name, email, and profile picture.
 
 ## Tech Stack
 
@@ -37,3 +38,4 @@ The app will have a clean and modern design with a focus on user experience. The
    - Use the `pedometer` package to track the user's steps.
 5. **State Management:** Use a `StreamBuilder` to listen for updates from the pedometer and update the UI accordingly.
 6. **Testing:** Test the app on both Android and iOS devices to ensure that it works as expected.
+7. **Profile Screen:** Create a new screen that allows users to view and edit their profile information.

@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
+// FoodItem class
+class FoodItem {
+  final String name;
+  final int calories;
+
+  FoodItem({required this.name, required this.calories});
+}
+
 class NutritionScreen extends StatefulWidget {
   const NutritionScreen({super.key});
 
@@ -17,6 +25,23 @@ class _NutritionScreenState extends State<NutritionScreen> {
   };
 
   final double _totalCalories = 2000;
+
+  // State for logged meals
+  final Map<String, List<FoodItem>> _mealLogs = {
+    'Breakfast': [],
+    'Lunch': [],
+    'Dinner': [],
+  };
+
+  void _addFoodItem(String meal, FoodItem item) {
+    setState(() {
+      _mealLogs[meal]!.add(item);
+    });
+  }
+
+  int _getMealCalories(String meal) {
+    return _mealLogs[meal]!.fold(0, (sum, item) => sum + item.calories);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,41 +197,89 @@ class _NutritionScreenState extends State<NutritionScreen> {
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         const SizedBox(height: 10),
-        _buildMealCard('Breakfast', 'https://images.unsplash.com/photo-1484723051597-62b8a788a660?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', '450 kcal'),
-        _buildMealCard('Lunch', 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', '750 kcal'),
-        _buildMealCard('Dinner', 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', '800 kcal'),
+        _buildMealCard('Breakfast'),
+        _buildMealCard('Lunch'),
+        _buildMealCard('Dinner'),
       ],
     );
   }
 
-  Widget _buildMealCard(String meal, String imageUrl, String calories) {
+  Widget _buildMealCard(String meal) {
     return Card(
       color: Colors.black.withOpacity(0.4),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Image.network(
-            imageUrl,
-            width: 60,
-            height: 60,
-            fit: BoxFit.cover,
-          ),
-        ),
-        title: Text(meal, style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold)),
-        subtitle: Text(calories, style: const TextStyle(fontSize: 16, color: Colors.white70)),
-        trailing: IconButton(
-          icon: const Icon(Icons.add_circle_outline, color: Colors.white70, size: 30),
-          onPressed: () {
-            // Placeholder for adding food items
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Add food to $meal')),
-            );
-          },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(meal, style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold)),
+                Text('${_getMealCalories(meal)} kcal', style: const TextStyle(fontSize: 16, color: Colors.white70)),
+              ],
+            ),
+            const SizedBox(height: 10),
+            ..._mealLogs[meal]!.map((item) => Text('${item.name}: ${item.calories} kcal', style: const TextStyle(color: Colors.white))),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: const Icon(Icons.add_circle_outline, color: Colors.white70, size: 30),
+                onPressed: () => _showAddFoodDialog(meal),
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  void _showAddFoodDialog(String meal) {
+    final nameController = TextEditingController();
+    final caloriesController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add to $meal'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Food Name'),
+              ),
+              TextField(
+                controller: caloriesController,
+                decoration: const InputDecoration(labelText: 'Calories'),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final name = nameController.text;
+                final calories = int.tryParse(caloriesController.text) ?? 0;
+                if (name.isNotEmpty && calories > 0) {
+                  _addFoodItem(meal, FoodItem(name: name, calories: calories));
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -43,6 +44,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
             secondary: const Icon(Icons.dark_mode, color: Color(0xFFBB86FC)),
             activeColor: const Color(0xFFBB86FC),
+          ),
+          ListTile(
+            title: const Text('Profile', style: TextStyle(color: Colors.white)),
+            leading: const Icon(Icons.person, color: Color(0xFFBB86FC)),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
           ),
           ListTile(
             title: const Text('Account', style: TextStyle(color: Colors.white)),
